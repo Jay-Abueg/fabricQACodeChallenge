@@ -1,0 +1,41 @@
+      pipeline {
+          agent any
+      
+          stages {
+              stage('Checkout') {
+                  steps {
+                      git 'https://your-git-repo-url.git' // Replace with your repo URL
+                  }
+              }
+      
+              stage('Install Dependencies') {
+                  steps {
+                      sh 'npm install'
+                  }
+              }
+      
+              stage('Run Tests') {
+                  steps {
+                      sh 'npx playwright test' // Run Playwright tests
+                  }
+              }
+      
+              stage('Publish Report') {
+                  steps {
+                      sh 'npx playwright show-report' // Generate and serve the HTML report
+      
+                      // Optional: Archive the report for later viewing
+                      archiveArtifacts artifacts: 'playwright-report/**'
+                  }
+              }
+          }
+      
+          post {
+              always {
+                  // Cleanup tasks (if needed)
+              }
+              failure {
+                  // Send notifications on failure
+              }
+          }
+      }
